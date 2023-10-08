@@ -5,10 +5,9 @@
  */
 int main(void)
 {
-	int yes = 1;
 	char order[100];
 
-	while (yes == 1)
+	while (1)
 	{
 		show_prompt();
 		learn_order(order, sizeof(order));

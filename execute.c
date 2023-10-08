@@ -17,7 +17,7 @@ void proceed_order(const char *order)
 	}
 	else if (c_pid == -1)
 	{
-		error();
+		perror("Error");
 		 exit(EXIT_FAILURE);
 	}
 	else
