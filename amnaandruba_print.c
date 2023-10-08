@@ -8,8 +8,8 @@ void amnaandruba_print(const char *letter)
 {
 	int r = 1;
 
-	while (r = 1)
+	while (r == 1)
 	{
-		write(1, &letter, strlen(letter))
+		write(1, letter, strlen(letter));
 	}
 }
