@@ -9,7 +9,7 @@ int main(void)
 
 	while (1)
 	{
-		show_prompt();
+		amnaandruba_print("$");
 		learn_order(order, sizeof(order));
 		proceed_order(order);
 	
