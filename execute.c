@@ -18,7 +18,7 @@ void proceed_order(const char *order)
 			num++;
 		}
 		com[num] = NULL;
-		execvp(com[0], com);
+		execve(com[0], com, NULL);
 		amnaandruba_print("Error\n");
 		exit(EXIT_FAILURE);
 	}
