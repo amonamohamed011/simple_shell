@@ -4,23 +4,33 @@
  *  order:the command
  *  Return:0 - 1
  */
-void proceed_order(const char *order)
+void proceed_order(char *order)
 {
-	pid_t c_pid = fork();
-	int num;
-	char *com[200];
-	char *RA_tok;
+	pid_t c_pid;
+	char* RA_path = getenv("PATH");
+	char* ptoken;
+	char *u_path[max];
+	
 
+	c_pid = fork();
 	if (c_pid == 0)
 	{
-		for (num = 0 , RA_tok = strtok((char *)order, " "); RA_tok != NULL; RA_tok = strtok(NULL, " "))
-		{	com[num] = RA_tok;
-			num++;
+		for (ptoken = strtok(RA_path,":");ptoken != NULL;)
+		{
+			RA_strcpy(*u_path, ptoken);
+			RA_strcat(*u_path, "/");
+			RA_strcat(*u_path, order);
+			if (access(*u_path, X_OK) != -1)
+			{
+				RA_strcat(*u_path,"\0");
+				execve(u_path[0],u_path, environ);
+				perror("execeve");
+				exit(EXIT_FAILURE);
+			}
+			ptoken = strtok(NULL, ":");
 		}
-		com[num] = NULL;
-		execve(com[0], com, NULL);
-		amnaandruba_print("Error\n");
-		exit(EXIT_FAILURE);
+		
+
 	}
 	else if (c_pid == -1)
 	{

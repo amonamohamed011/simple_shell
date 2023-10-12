@@ -6,7 +6,6 @@
 int main(void)
 {
 	char order[100];
-
 	while (1)
 	{
 		amnaandruba_print("$");

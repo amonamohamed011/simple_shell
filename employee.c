@@ -13,7 +13,18 @@ void learn_order(char *order, size_t s)
 	{
 		if (fgets(order, s, stdin) == NULL)
 		{
-			if(feof(stdin))
+			str = strcspn(order, "\n");
+			order[str] = '\0';
+			if (RA_strcmp(order, "env") == 0)
+			{
+				printf("match");
+				RA_env();
+			}
+			if (RA_strcmp(order, "exit") == 0)
+			{
+				return;
+			}
+			else if(feof(stdin))
 			{
 				amnaandruba_print("\n");
 				exit(EXIT_SUCCESS);
@@ -26,5 +37,18 @@ void learn_order(char *order, size_t s)
 		}
 		str = strcspn(order, "\n");
 		order[str] = '\0';
+	}
+}
+/**
+ * RA_env - env custom function
+ */
+void RA_env()
+{
+	char **env = environ;
+	while (*env)
+	{
+		amnaandruba_print(*env);
+		amnaandruba_print("\n");
+		env++;
 	}
 }
