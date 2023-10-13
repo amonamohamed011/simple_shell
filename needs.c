@@ -5,7 +5,7 @@
  * @s2:para2
  * Returm:0-1
  */
-int RA_strcmp(char *s1, char *s2)
+int RA_strcmp(char s1, char s2)
 {
 	int let;
 	int n = 0;
@@ -53,7 +53,7 @@ char *RA_strcat(char *s1, char *s2)
  * @s2:para
  * Return:value
  */
-char *RA_strcpy(char *s1, char *s2)
+char *RA_strcpy(char s1, char s2)
 {
 	int l = -1;
 
