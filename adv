@@ -1,0 +1,39 @@
+#include "shell.h"
+/**
+ * RA_strtok - our custom strtok function
+ */
+char* RA_strtok(char* s,  char* d)
+{
+	static char* ptr;
+	char* t1;
+	char* op;
+	if (s != NULL)
+	{
+		ptr = s;
+	}
+	else if (s == NULL || *s == '\0' || *ptr == '\0')
+		{
+			return (NULL);
+
+		}
+
+	while (*ptr != '\0')
+       	{
+		for (op = d; *op != '\0'; op++)
+	       	{
+			if (*ptr == *op)
+		       	{
+				*ptr = '\0';
+				ptr++;
+				if (t1 == ptr - 1)
+			       	{
+					t1 = ptr;
+					break;
+				}
+				return (t1);
+			}
+		}
+		ptr++;
+	}	
+	return (t1);
+}

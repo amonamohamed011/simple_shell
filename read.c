@@ -5,52 +5,59 @@
  */
 
 int main() {
-	char* path = getenv("PATH");
-	pid_t PID;
+	char* RA_path1 = RA_getenv("PATH");
+	pid_t RA_PID;
 	char order [max];
 	char *arg[max];
 	int ko;
 	char *t;
+	int RA = 2;
+	int ans;
 	
-	while (1) 
+	while (RA == 2)
 	{
-		amnaandruba_print("shell$ ");
+		amnaandruba_print("RA_shell$ ");
 		fgets(order, sizeof(order), stdin);
-		order[strcspn(order, "\n")] = '\0';
+		ans = RA_strcspn(order, "\n");
+		order[ans] = '\0';
 		t = strtok(order, " ");
 		for (ko = 0; t != NULL && ko < max - 1; ko++)
 		{
 			arg[ko] = t;
-			t = strtok(NULL, " ");
+			t =strtok(NULL, " ");
 		}
 		arg[ko] = NULL;
 
-						          
-	       	if (strcmp(order, "exit") == 0)
+		if (RA_strcmp(arg[0], "cd") == 0)
+		{
+			RA_cd(arg);
+			continue;
+		}
+	       	if (RA_strcmp(order, "exit") == 0)
 		{
 			break;
 		}
-		if (strcmp(order, "env") == 0)
+		if (RA_strcmp(order, "env") == 0)
 		{ 
 			RA_env();
 			continue;
 		}
 	
-		PID = fork();
-		if (PID < 0) 
+		RA_PID = fork();
+		if (RA_PID < 0) 
 		{
 			perror("fork");
 			exit(EXIT_FAILURE);
 		} 
-		else if (PID == 0) 
+		else if (RA_PID == 0) 
 		{
-			char* token = strtok(path, ":");
+			char* token = strtok(RA_path1,":");
 			while (token != NULL) 
 			{
 				char abs_path[MAX_PATH];
-				strcpy(abs_path, token);
-				strcat(abs_path, "/");
-				strcat(abs_path, order);
+				RA_strcpy(abs_path, token);
+				RA_strcat(abs_path, "/");
+				RA_strcat(abs_path, order);
 				if (access(abs_path, X_OK) != -1) 
 				{
 					execve(abs_path, arg, NULL);
@@ -61,35 +68,16 @@ int main() {
 				token = strtok(NULL, ":");
 			}
 
-		amnaandruba_print("order not found\n");
+		amnaandruba_print("command not found\n");
 		exit(EXIT_SUCCESS);
 		} 
 		else 
 		{
-			int status;
-			waitpid(PID, &status, 0);
+			int RA_status;
+			waitpid(RA_PID, &RA_status, 0);
 		}
 		}
 		return (0);
 
 }
 
-char * const * addNullTerminator(char *arg) {
-	int l = strlen(arg);
-	char **result = malloc((l + 1) * sizeof(char *));
-	 char *nullTerminator = malloc(2 * sizeof(char));
-
-	if (result == NULL) {
-		amnaandruba_print( "Memory allocation failed\n");
-		exit(1);
-	}
-	result[0] = arg;
-	if (nullTerminator == NULL) 
-	{
-		amnaandruba_print("Memory allocation failed\n");
-		exit(1);
-	}
-	*nullTerminator = '\0';
-	result[1] = nullTerminator;
-	return (char * const *)result;
-}
