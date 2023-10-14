@@ -13,8 +13,8 @@ extern char **environ;
 #define MAX_PATH 256
 void amnaandruba_print(char *letter);
 void RA_env();
-int RA_strcmp(char *s1, char *s2);
-char *RA_strcpy(char *s1, char *s2);
+int *RA_strcmp(char s1, char s2);
+char *RA_strcpy(char s1, char s2);
 char *RA_strcat(char *s1, char *s2);
 int input(void);
 char * const *addNullTerminator(char *arg);

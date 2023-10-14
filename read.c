@@ -7,23 +7,33 @@
 int main() {
 	char* path = getenv("PATH");
 	pid_t PID;
-	char * const *n;
 	char order [max];
+	char *arg[max];
+	int ko;
+	char *t;
 	
 	while (1) 
 	{
 		amnaandruba_print("shell$ ");
 		fgets(order, sizeof(order), stdin);
 		order[strcspn(order, "\n")] = '\0';
+		t = strtok(order, " ");
+		for (ko = 0; t != NULL && ko < max - 1; ko++)
+		{
+			arg[ko] = t;
+			t = strtok(NULL, " ");
+		}
+		arg[ko] = NULL;
 
 						          
-	       	if (RA_strcmp(order, "exit") == 0)
+	       	if (strcmp(order, "exit") == 0)
 		{
 			break;
 		}
-		if (RA_strcmp(order, "env") == 0)
+		if (strcmp(order, "env") == 0)
 		{ 
 			RA_env();
+			continue;
 		}
 	
 		PID = fork();
@@ -38,13 +48,12 @@ int main() {
 			while (token != NULL) 
 			{
 				char abs_path[MAX_PATH];
-				RA_strcpy(abs_path, token);
-				RA_strcat(abs_path, "/");
-				RA_strcat(abs_path, order);
+				strcpy(abs_path, token);
+				strcat(abs_path, "/");
+				strcat(abs_path, order);
 				if (access(abs_path, X_OK) != -1) 
 				{
-					n = addNullTerminator(abs_path);
-					execve(abs_path, n, environ);
+					execve(abs_path, arg, NULL);
 					perror("execve");
 					exit(EXIT_FAILURE);
 				}
@@ -65,17 +74,22 @@ int main() {
 
 }
 
-char *const *addNullTerminator(char *arg) 
-{
-	int s = 0;
-	char * const *result = NULL;
+char * const * addNullTerminator(char *arg) {
+	int l = strlen(arg);
+	char **result = malloc((l + 1) * sizeof(char *));
+	 char *nullTerminator = malloc(2 * sizeof(char));
 
-	while(arg[s] != NULL)
+	if (result == NULL) {
+		amnaandruba_print( "Memory allocation failed\n");
+		exit(1);
+	}
+	result[0] = arg;
+	if (nullTerminator == NULL) 
 	{
-		s++;
+		amnaandruba_print("Memory allocation failed\n");
+		exit(1);
 	}
-	result = malloc(size of char * 
-
-	result[s] = NULL;
-	return (result);
-	}
+	*nullTerminator = '\0';
+	result[1] = nullTerminator;
+	return (char * const *)result;
+}

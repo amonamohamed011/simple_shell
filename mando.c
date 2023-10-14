@@ -13,12 +13,12 @@ int input()
 	fgets(order, sizeof(order), stdin);
 	order[strcspn(order, "\n")] = '\0';
 
-	if (RA_strcmp(order, "exit") == 0) 
+	if (strcmp(order, "exit") == 0) 
 	{
 		ans = -1;
 	}
 
-	if (RA_strcmp(order, "env") == 0) 
+	if (strcmp(order, "env") == 0) 
 	{
 		RA_env();
 		ans = 1;
