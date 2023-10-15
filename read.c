@@ -4,26 +4,40 @@
  * Return:0m - 1
  */
 
-int main() {
+int main(void)
+{
 	char* RA_path1 = RA_getenv("PATH");
 	pid_t RA_PID;
-	char order [max];
+	char *order = NULL;
 	char *arg[max];
-	int ko;
-	char *t;
+	int ko, ans, fr;
+	char *t, *hash;
 	int RA = 2;
-	int ans;
+	size_t size = 0;
+	ssize_t ret;
 	
 	while (RA == 2)
 	{
 		amnaandruba_print("RA_shell$ ");
-		fgets(order, sizeof(order), stdin);
+		ret = getline(&order, &size, stdin);
+		if (ret == -1)
+		{
+			perror("getline");
+			exit(EXIT_FAILURE);
+		}
+
+		hash = RA_strchr(order, '#');
+		if (hash != NULL)
+		{
+			*hash = '\0';
+		}
 		ans = RA_strcspn(order, "\n");
 		order[ans] = '\0';
 		t = strtok(order, " ");
 		for (ko = 0; t != NULL && ko < max - 1; ko++)
 		{
-			arg[ko] = t;
+			arg[ko] = malloc(RA_strlen(order) + 1);
+			RA_strcpy(arg[ko], t);
 			t =strtok(NULL, " ");
 		}
 		arg[ko] = NULL;
@@ -51,33 +65,49 @@ int main() {
 		} 
 		else if (RA_PID == 0) 
 		{
-			char* token = strtok(RA_path1,":");
-			while (token != NULL) 
-			{
-				char abs_path[MAX_PATH];
-				RA_strcpy(abs_path, token);
-				RA_strcat(abs_path, "/");
-				RA_strcat(abs_path, order);
-				if (access(abs_path, X_OK) != -1) 
-				{
-					execve(abs_path, arg, NULL);
-					perror("execve");
-					exit(EXIT_FAILURE);
-				}
+			RA_buffer(order, RA_path1, arg);
 
-				token = strtok(NULL, ":");
-			}
 
 		amnaandruba_print("command not found\n");
 		exit(EXIT_SUCCESS);
-		} 
-		else 
+		}
+		else
 		{
 			int RA_status;
+
 			waitpid(RA_PID, &RA_status, 0);
 		}
-		}
+		for (fr = 0; fr < ko; fr++)
+		{
+			free(arg[fr]);
+		}}
 		return (0);
-
 }
+/**
+ * RA_buffer - function
+ */
+void RA_buffer(char *s, char *path, char **arg)
+{
+	char* token = strtok(path,":");
+
+	while (token != NULL)
+	{
+		char abs_path[MAX_PATH];
+
+		RA_strcpy(abs_path, token);
+		RA_strcat(abs_path, "/");
+		RA_strcat(abs_path, s);
+		
+		if (access(abs_path, X_OK) != -1)
+		{
+			execve(abs_path, arg, NULL);
+			perror("execve");
+			exit(EXIT_FAILURE);
+		}
+		 token = strtok(NULL, ":");
+	}
+}
+
+
+
 

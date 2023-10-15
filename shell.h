@@ -20,4 +20,7 @@ int input(void);
 int RA_strcspn(char* s1, char* s2);
 char *RA_getenv(const char *name);
 void RA_cd(char** com);
+char *RA_strchr(char *s, char s2);
+int RA_strlen(char *s);
+void RA_buffer(char *s, char *path, char **arg);
 #endif
