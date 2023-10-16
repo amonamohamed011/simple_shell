@@ -12,14 +12,14 @@ extern char **environ;
 #define MAX_order 100
 #define MAX_PATH 256
 void amnaandruba_print(char *letter);
-void RA_env();
+void RA_env(void);
 int RA_strcmp(char *s1, char *s2);
 char *RA_strcpy(char *s1, char *s2);
 char *RA_strcat(char *s1, char *s2);
 int input(void);
-int RA_strcspn(char* s1, char* s2);
+int RA_strcspn(char *s1, char *s2);
 char *RA_getenv(const char *name);
-void RA_cd(char** com);
+void RA_cd(char **com);
 char *RA_strchr(char *s, char s2);
 int RA_strlen(char *s);
 void RA_buffer(char *s, char *path, char **arg);

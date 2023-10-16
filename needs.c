@@ -3,7 +3,7 @@
  * RA_strcmp - our custom strcmp function
  * @s1:para
  * @s2:para2
- * Returm:0-1
+ * Return:0-1
  */
 int RA_strcmp(char *s1, char *s2)
 {
@@ -71,19 +71,19 @@ char *RA_strcpy(char *s1, char *s2)
  * @s2:second
  * Return:num
  */
-int RA_strcspn(char* s1, char* s2) 
+int RA_strcspn(char *s1, char *s2)
 {
 	int i, j;
 
-	for (i = 0; s1[i] != '\0'; i++) 
+	for (i = 0; s1[i] != '\0'; i++)
 	{
 		for (j = 0; s2[j] != '\0'; j++)
-	       	{
-			if (s1[i] == s2[j]) 
+		{
+			if (s1[i] == s2[j])
 			{
 				return (i);
 			}
 		}
-	}	
+	}
 	return (i);
 }

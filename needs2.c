@@ -14,9 +14,9 @@ int RA_strlen(char *s)
 }
 /**
  * RA_strchr - function
- * @s;para
+ * @s:para
  * @s2:para2
- * Returen:poimter
+ * Return:poimter
  */
 char *RA_strchr(char *s, char s2)
 {
