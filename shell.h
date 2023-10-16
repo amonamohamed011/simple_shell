@@ -23,4 +23,9 @@ void RA_cd(char** com);
 char *RA_strchr(char *s, char s2);
 int RA_strlen(char *s);
 void RA_buffer(char *s, char *path, char **arg);
+char *RA_get(void);
+void RA_hash(char *ohash);
+int RA_func(char **farg, char *forder);
+void RA_free(char **arg, char *order);
+int RA_proc(char **arg, char *order);
 #endif

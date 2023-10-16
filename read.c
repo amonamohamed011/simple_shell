@@ -6,31 +6,16 @@
 
 int main(void)
 {
-	char* RA_path1 = RA_getenv("PATH");
-	pid_t RA_PID;
-	char *order = NULL;
 	char *arg[max];
-	int ko, ans, fr;
-	char *t, *hash;
-	int RA = 2;
-	size_t size = 0;
-	ssize_t ret;
+	int ko, ans, fret, rp;
+	char *t, *order;
 	
-	while (RA == 2)
+	while (10 > 8)
 	{
-		amnaandruba_print("RA_shell$ ");
-		ret = getline(&order, &size, stdin);
-		if (ret == -1)
-		{
-			perror("getline");
-			exit(EXIT_FAILURE);
-		}
-
-		hash = RA_strchr(order, '#');
-		if (hash != NULL)
-		{
-			*hash = '\0';
-		}
+		order = RA_get();	
+		if(order == NULL)
+		{	exit(EXIT_FAILURE); }
+		RA_hash(order);
 		ans = RA_strcspn(order, "\n");
 		order[ans] = '\0';
 		t = strtok(order, " ");
@@ -41,46 +26,18 @@ int main(void)
 			t =strtok(NULL, " ");
 		}
 		arg[ko] = NULL;
-
-		if (RA_strcmp(arg[0], "cd") == 0)
-		{
-			RA_cd(arg);
-			continue;
-		}
-	       	if (RA_strcmp(order, "exit") == 0)
-		{
-			break;
-		}
-		if (RA_strcmp(order, "env") == 0)
-		{ 
-			RA_env();
-			continue;
-		}
-	
-		RA_PID = fork();
-		if (RA_PID < 0) 
-		{
-			perror("fork");
-			exit(EXIT_FAILURE);
-		} 
-		else if (RA_PID == 0) 
-		{
-			RA_buffer(order, RA_path1, arg);
-
-
-		amnaandruba_print("command not found\n");
-		exit(EXIT_SUCCESS);
-		}
-		else
-		{
-			int RA_status;
-
-			waitpid(RA_PID, &RA_status, 0);
-		}
-		for (fr = 0; fr < ko; fr++)
-		{
-			free(arg[fr]);
-		}}
+		fret = RA_func(arg, order);
+		if(fret == 2)
+		{	continue; }
+		else if(fret == -1)
+		{	break; }
+		rp = RA_proc(arg, order);
+		if(rp == -1)
+		{	exit(EXIT_FAILURE); }
+		else if(rp == 1)
+		{	exit(EXIT_SUCCESS); }
+		RA_free(arg, order);
+	}
 		return (0);
 }
 /**
@@ -89,14 +46,22 @@ int main(void)
 void RA_buffer(char *s, char *path, char **arg)
 {
 	char* token = strtok(path,":");
+	char* p;
 
 	while (token != NULL)
 	{
 		char abs_path[MAX_PATH];
-
-		RA_strcpy(abs_path, token);
-		RA_strcat(abs_path, "/");
-		RA_strcat(abs_path, s);
+		p = RA_strchr(s, '/');
+		if(p == NULL)
+		{
+			RA_strcpy(abs_path, token);
+			RA_strcat(abs_path, "/");
+			RA_strcat(abs_path, s);
+		}
+		else
+		{
+			RA_strcpy(abs_path, s);
+		}
 		
 		if (access(abs_path, X_OK) != -1)
 		{
@@ -107,6 +72,83 @@ void RA_buffer(char *s, char *path, char **arg)
 		 token = strtok(NULL, ":");
 	}
 }
+/**
+ * RA_get - function
+ */
+char *RA_get(void)
+{
+	 char *order = NULL;
+	 size_t size = 0;
+	 ssize_t ret;
+
+	amnaandruba_print("RA_shell$ ");
+	ret = getline(&order, &size, stdin);
+	if (ret == -1)
+	{
+		perror("getline");
+		free(order);
+		return(NULL);
+	}
+	return (order);
+}
+/**
+ * RA_hash - function
+ */
+void RA_hash(char *ohash)
+{
+	char *l;
+
+	l = RA_strchr(ohash, '#');
+	if (l != NULL)
+	{
+		*l = '\0';
+	}
+}
+/**
+ * RA_free - function
+ */
+void RA_free(char **arg, char *order)
+{
+	free(order);
+	free(*arg);
+}
+/**
+ * RA_proc - function
+ */
+int RA_proc(char **arg, char *order)
+{
+	char* RA_path1 = RA_getenv("PATH");
+	pid_t RA_PID;
+	int RA_status;
+
+	RA_PID = fork();
+	if (RA_PID < 0)
+	{
+		perror("fork");
+		RA_free(arg, order);
+		return (-1);
+	}
+	else if (RA_PID == 0)
+	{
+		RA_buffer(order, RA_path1, arg);
+		amnaandruba_print("command not found\n");
+		RA_free(arg, order);
+		return (1);
+	}
+	else
+		  { waitpid(RA_PID, &RA_status, 0); }
+	return (0);
+}
+
+
+														                
+
+
+
+	
+	
+		
+
 
 
 

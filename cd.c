@@ -13,6 +13,7 @@ void RA_cd(char** com)
 	{
 		if((chdir(com[1]) != 0))
 		{
+			free(com[1]);
 			perror("cd");
 		}
 	}
