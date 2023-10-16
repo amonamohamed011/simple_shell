@@ -23,7 +23,7 @@ int RA_strcmp(char *s1, char *s2)
 		j = s2[n] - s1[n];
 		return (-j);
 	}
-	return(0);
+	return (0);
 }
 /**
  * RA_strcat - function
@@ -64,10 +64,12 @@ char *RA_strcpy(char *s1, char *s2)
 	} while (s2[l] != '\0');
 
 	return (s2);
-
 }
 /**
  * RA_strcspn - function
+ * @s1:first
+ * @s2:second
+ * Return:num
  */
 int RA_strcspn(char* s1, char* s2) 
 {
@@ -85,6 +87,3 @@ int RA_strcspn(char* s1, char* s2)
 	}	
 	return (i);
 }
-
-
-

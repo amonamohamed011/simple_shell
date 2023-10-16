@@ -3,17 +3,16 @@
  * main - our main function
  * Return:0m - 1
  */
-
 int main(void)
 {
 	char *arg[max];
 	int ko, ans, fret, rp;
 	char *t, *order;
-	
+
 	while (10 > 8)
 	{
-		order = RA_get();	
-		if(order == NULL)
+		order = RA_get();
+		if (order == NULL)
 		{	exit(EXIT_FAILURE); }
 		RA_hash(order);
 		ans = RA_strcspn(order, "\n");
@@ -23,18 +22,18 @@ int main(void)
 		{
 			arg[ko] = malloc(RA_strlen(order) + 1);
 			RA_strcpy(arg[ko], t);
-			t =strtok(NULL, " ");
+			t = strtok(NULL, " ");
 		}
 		arg[ko] = NULL;
 		fret = RA_func(arg, order);
-		if(fret == 2)
+		if (fret == 2)
 		{	continue; }
-		else if(fret == -1)
+		else if (fret == -1)
 		{	break; }
 		rp = RA_proc(arg, order);
-		if(rp == -1)
+		if (rp == -1)
 		{	exit(EXIT_FAILURE); }
-		else if(rp == 1)
+		else if (rp == 1)
 		{	exit(EXIT_SUCCESS); }
 		RA_free(arg, order);
 	}
@@ -42,17 +41,21 @@ int main(void)
 }
 /**
  * RA_buffer - function
+ * @s:fisrt parameter
+ * @path:second parameter
+ * @arg:third parameter
  */
 void RA_buffer(char *s, char *path, char **arg)
 {
-	char* token = strtok(path,":");
-	char* p;
+	char *token = strtok(path, ":");
+	char *p;
 
 	while (token != NULL)
 	{
 		char abs_path[MAX_PATH];
+
 		p = RA_strchr(s, '/');
-		if(p == NULL)
+		if (p == NULL)
 		{
 			RA_strcpy(abs_path, token);
 			RA_strcat(abs_path, "/");
@@ -62,7 +65,6 @@ void RA_buffer(char *s, char *path, char **arg)
 		{
 			RA_strcpy(abs_path, s);
 		}
-		
 		if (access(abs_path, X_OK) != -1)
 		{
 			execve(abs_path, arg, NULL);
@@ -74,6 +76,7 @@ void RA_buffer(char *s, char *path, char **arg)
 }
 /**
  * RA_get - function
+ * Return:char
  */
 char *RA_get(void)
 {
@@ -81,31 +84,21 @@ char *RA_get(void)
 	 size_t size = 0;
 	 ssize_t ret;
 
-	amnaandruba_print("RA_shell$ ");
+	if (isatty(STDIN_FILENO))
+	{	amnaandruba_print("$ "); }
 	ret = getline(&order, &size, stdin);
 	if (ret == -1)
 	{
 		perror("getline");
 		free(order);
-		return(NULL);
+		return (NULL);
 	}
 	return (order);
 }
 /**
- * RA_hash - function
- */
-void RA_hash(char *ohash)
-{
-	char *l;
-
-	l = RA_strchr(ohash, '#');
-	if (l != NULL)
-	{
-		*l = '\0';
-	}
-}
-/**
  * RA_free - function
+ * @arg:first parameter
+ * @order:second parameter
  */
 void RA_free(char **arg, char *order)
 {
@@ -114,10 +107,13 @@ void RA_free(char **arg, char *order)
 }
 /**
  * RA_proc - function
+ * @arg:first parameter
+ * @order:second parameter
+ * Return:num
  */
 int RA_proc(char **arg, char *order)
 {
-	char* RA_path1 = RA_getenv("PATH");
+	char *RA_path1 = RA_getenv("PATH");
 	pid_t RA_PID;
 	int RA_status;
 
@@ -139,17 +135,3 @@ int RA_proc(char **arg, char *order)
 		  { waitpid(RA_PID, &RA_status, 0); }
 	return (0);
 }
-
-
-														                
-
-
-
-	
-	
-		
-
-
-
-
-
