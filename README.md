@@ -1,2 +1,2 @@
-0x16. C - Simple Shell
-done by ruba and amna
+project 0x16. C - Simple Shell
+done by amna and ruba
