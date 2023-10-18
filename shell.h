@@ -30,7 +30,7 @@ void RA_free(char **arg, char *order);
 int RA_proc(char **arg, char *order);
 int RA_space(char R);
 int RA_empty(const char *S);
-char** RA_token(char *order);
+char **RA_token(char *order);
 char *RA_strncpy(char *d, char *s, int n);
 
 #endif
