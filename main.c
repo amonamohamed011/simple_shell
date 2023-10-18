@@ -5,47 +5,51 @@
  */
 int main(void)
 {
-	char *arg[max];
-	int ko, ans, fret, rp;
-	char *t, *order;
+	char **arg;
+	int fret;
+	char *order;
+	int RA_status = 0;
 
 	while (10 > 8)
 	{
 		order = RA_get();
 		if (order == NULL)
-		{	exit(EXIT_FAILURE); }
-		RA_hash(order);
-		ans = RA_strcspn(order, "\n");
-		order[ans] = '\0';
-		t = strtok(order, " ");
-		for (ko = 0; t != NULL && ko < max - 1; ko++)
 		{
-			arg[ko] = malloc(RA_strlen(order) + 1);
-			RA_strcpy(arg[ko], t);
-			t = strtok(NULL, " ");
+			if (isatty(STDIN_FILENO))
+				amnaandruba_print("\n");
+			return (RA_status);
 		}
-		arg[ko] = NULL;
+		RA_hash(order);
+		order[RA_strcspn(order, "\n")] = '\0';
+		if (RA_empty(order))
+		{
+			free(order);
+			continue;
+		}
+		arg = RA_token(order);
+		if (!arg)
+		{
+			free(arg);
+			continue;
+		}
 		fret = RA_func(arg, order);
 		if (fret == 2)
 		{	continue; }
 		else if (fret == -1)
 		{	break; }
-		rp = RA_proc(arg, order);
-		if (rp == -1)
-		{	exit(EXIT_FAILURE); }
-		else if (rp == 1)
-		{	exit(EXIT_SUCCESS); }
+		RA_status = RA_proc(arg, order);
 		RA_free(arg, order);
 	}
-		return (0);
+		return (RA_status);
 }
 /**
  * RA_buffer - function
- * @s:fisrt parameter
+ * @order:fisrt parameter
  * @path:second parameter
  * @arg:third parameter
+ * Return:int
  */
-void RA_buffer(char *s, char *path, char **arg)
+int RA_buffer(char *path, char **arg, char *order)
 {
 	char *token = strtok(path, ":");
 	char *p;
@@ -54,25 +58,33 @@ void RA_buffer(char *s, char *path, char **arg)
 	{
 		char abs_path[MAX_PATH];
 
-		p = RA_strchr(s, '/');
+		p = RA_strchr(arg[0], '/');
 		if (p == NULL)
 		{
 			RA_strcpy(abs_path, token);
 			RA_strcat(abs_path, "/");
-			RA_strcat(abs_path, s);
+			RA_strcat(abs_path, arg[0]);
 		}
 		else
 		{
-			RA_strcpy(abs_path, s);
+			RA_strcpy(abs_path, arg[0]);
+		}
+		if (abs_path == NULL)
+		{
+			free(arg);
+			perror(arg[0]);
+			return (127);
 		}
 		if (access(abs_path, X_OK) != -1)
 		{
-			execve(abs_path, arg, NULL);
-			perror("execve");
-			exit(EXIT_FAILURE);
+			execve(abs_path, arg, environ);
+			free(arg);
+			free(order);
+			exit(127);
 		}
 		 token = strtok(NULL, ":");
 	}
+	return (0);
 }
 /**
  * RA_get - function
@@ -83,17 +95,21 @@ char *RA_get(void)
 	 char *order = NULL;
 	 size_t size = 0;
 	 ssize_t ret;
+	 char *order2 = NULL;
 
 	if (isatty(STDIN_FILENO))
 	{	amnaandruba_print("$ "); }
 	ret = getline(&order, &size, stdin);
 	if (ret == -1)
 	{
-		perror("getline");
 		free(order);
 		return (NULL);
 	}
-	return (order);
+	order2 = malloc(ret + 1);
+	RA_strncpy(order2, order, ret);
+	order2[ret] = '\0';
+	free(order);
+	return (order2);
 }
 /**
  * RA_free - function
@@ -103,14 +119,14 @@ char *RA_get(void)
 void RA_free(char **arg, char *order)
 {
 	free(order);
-	free(*arg);
+	free(arg);
 }
 /**
  * RA_proc - function
  * @arg:first parameter
  * @order:second parameter
  * Return:num
- */
+*/
 int RA_proc(char **arg, char *order)
 {
 	char *RA_path1 = RA_getenv("PATH");
@@ -118,20 +134,14 @@ int RA_proc(char **arg, char *order)
 	int RA_status;
 
 	RA_PID = fork();
-	if (RA_PID < 0)
+	if (RA_PID == 0)
 	{
-		perror("fork");
-		RA_free(arg, order);
-		return (-1);
-	}
-	else if (RA_PID == 0)
-	{
-		RA_buffer(order, RA_path1, arg);
+		RA_status = RA_buffer(RA_path1, arg, order);
 		amnaandruba_print("command not found\n");
 		RA_free(arg, order);
-		return (1);
+		return (RA_status);
 	}
 	else
 		  { waitpid(RA_PID, &RA_status, 0); }
-	return (0);
+	return (WEXITSTATUS(RA_status));
 }

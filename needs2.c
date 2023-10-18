@@ -1,5 +1,15 @@
 #include "shell.h"
 /**
+ * RA_space - function
+ * @R:para
+ * Return:int
+ */
+int RA_space(char R)
+{
+	return (R == ' ' || R == '\t' || R == '\n' ||
+			R == '\v' || R == '\f' || R == '\r');
+}
+/**
  * RA_strlen - counts the length
  * @s:para
  * Return:length
@@ -30,4 +40,21 @@ char *RA_strchr(char *s, char s2)
 		}
 	}
 	return (NULL);
+}
+/**
+ * RA_empty - checks if empty
+ * @S:para
+ * Return:int
+ */
+int RA_empty(const char *S)
+{
+	if (S == NULL)
+	{	return (1); }
+	while (*S)
+	{
+		if (!RA_space(*S))
+		{	return (0); }
+		S++;
+	}
+	return (1);
 }

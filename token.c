@@ -4,28 +4,39 @@
  * @order:parameter
  * Return:int
  */
-int RA_token(char *order)
+char **RA_token(char *order)
 {
-	int a, k;
+	int k = 0;
 	char *t;
-	char *arg[max];
+	char **arg;
 
-	a = RA_strcspn(order, "\n");
-	order[a] = '\0';
-	t = strtok(order, " ");
-	for (k = 0; t != NULL && k < max - 1; k++)
+	arg = malloc(sizeof(char *) * 15);
+	if (!arg)
 	{
-		arg[k] = malloc(RA_strlen(order) + 1);
-		RA_strcpy(arg[k], t);
-		t = strtok(NULL, " ");
+		return (NULL);
 	}
+	t = strtok(order, " \t");
+	while (t != NULL && (*t == ' ' || *t == '\t'))
+	{
+		/*arg[k] = malloc(RA_strlen(order) + 1);*/
+		/*RA_strcpy(arg[k], t);*/
+		t = strtok(NULL, " \t\n");
+		}
+	while (t != NULL)
+	{
+		arg[k] = t;
+		t = strtok(NULL, " \t\n");
+		k++;
+	}
+
 	arg[k] = NULL;
-	return (0);
+	free(t);
+	return (arg);
 }
 /**
  * RA_func - function
  * @farg:first parameter
- * @forder:second parameter
+ * @forder:para
  * Return:num
  */
 int RA_func(char **farg, char *forder)
@@ -36,17 +47,15 @@ int RA_func(char **farg, char *forder)
 		RA_free(farg, forder);
 		return (2);
 	}
-	if (RA_strcmp(forder, "env") == 0)
+	if (RA_strcmp(farg[0], "env") == 0)
 	{
 		RA_env();
-		free(forder);
-		free(*farg);
+		RA_free(farg, forder);
 		return (2);
 	}
-	if (RA_strcmp(forder, "exit") == 0)
+	if (RA_strcmp(farg[0], "exit") == 0)
 	{
-		free(forder);
-		free(*farg);
+		RA_free(farg, forder);
 		return (-1);
 	}
 	return (0);

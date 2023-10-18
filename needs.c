@@ -87,3 +87,30 @@ int RA_strcspn(char *s1, char *s2)
 	}
 	return (i);
 }
+/**
+ * RA_strncpy - function
+ * @d:para
+ * @s:para
+ * @n:int
+ * Return:char
+ */
+char *RA_strncpy(char *d, char *s, int n)
+{
+	int l = 0;
+	int m;
+
+	while (s[l] != '\0')
+	{
+		l++;
+	}
+	for (m = 0; m < n && s[m] != '\0'; m++)
+	{
+		d[m] = s[m];
+	}
+	while (m < n)
+	{
+		d[m] = '\0';
+		m++;
+	}
+	return (d);
+}

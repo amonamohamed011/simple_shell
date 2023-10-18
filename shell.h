@@ -22,10 +22,15 @@ char *RA_getenv(const char *name);
 void RA_cd(char **com);
 char *RA_strchr(char *s, char s2);
 int RA_strlen(char *s);
-void RA_buffer(char *s, char *path, char **arg);
+int RA_buffer(char *path, char **arg, char *order);
 char *RA_get(void);
 void RA_hash(char *ohash);
 int RA_func(char **farg, char *forder);
 void RA_free(char **arg, char *order);
 int RA_proc(char **arg, char *order);
+int RA_space(char R);
+int RA_empty(const char *S);
+char** RA_token(char *order);
+char *RA_strncpy(char *d, char *s, int n);
+
 #endif
